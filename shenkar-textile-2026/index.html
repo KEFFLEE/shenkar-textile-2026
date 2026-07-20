@@ -72,30 +72,34 @@
     overflow:hidden;
     background:var(--ink);
   }
-  .marquee-wrap{
+  /* ======= HERO MOSAIC ======= */
+  .hero-mosaic{
     position:absolute; inset:0;
-    display:flex; flex-direction:column; justify-content:center; gap:14px;
-    opacity:.85;
+    display:grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap:3px;
+    overflow:hidden;
   }
-  .marquee-row{
-    display:flex; gap:14px;
-    width:max-content;
-    animation: scrollLeft 70s linear infinite;
-  }
-  .marquee-row.reverse{ animation-name: scrollRight; }
-  .marquee-row:hover{ animation-play-state: paused; }
-  @keyframes scrollLeft{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
-  @keyframes scrollRight{ from{ transform:translateX(-50%); } to{ transform:translateX(0); } }
-
   .m-card{
     position:relative;
-    flex:none;
-    width:170px; height:230px;
-    border-radius:2px;
     overflow:hidden;
-    filter:grayscale(15%) brightness(.62);
+    cursor:pointer;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), filter .35s;
+    filter:brightness(.55) saturate(.8);
+    will-change:transform;
+  }
+  .m-card:hover{
+    filter:brightness(1) saturate(1.1);
+    z-index:3;
   }
   .m-card img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .m-card.no-photo{
+    display:flex; align-items:center; justify-content:center;
+    background:
+      repeating-linear-gradient(45deg, rgba(238,37,44,.07) 0px, rgba(238,37,44,.07) 2px, transparent 2px, transparent 14px),
+      var(--linen);
+  }
   .m-card.no-photo, .tag-img.no-photo, .modal-hero.no-photo{
     display:flex; align-items:center; justify-content:center;
     background:
@@ -111,13 +115,21 @@
   .np-mark-lg{ font-size:4rem; }
   .modal-hero.no-photo{ background: repeating-linear-gradient(45deg, rgba(241,236,223,.08) 0px, rgba(241,236,223,.08) 2px, transparent 2px, transparent 14px), var(--ink); }
   .modal-hero.no-photo .np-mark{ color:var(--canvas); }
-  .m-card span{
-    position:absolute; right:10px; bottom:8px; left:10px;
-    color:#fff; font-size:.66rem; letter-spacing:.05em;
-    font-family:'Montserrat', 'Space Mono', monospace;
-    opacity:.9;
+  .m-card-label{
+    position:absolute; inset:0;
+    display:flex; align-items:flex-end;
+    padding:14px 12px;
+    background:linear-gradient(to top, rgba(20,16,12,.85) 0%, transparent 60%);
+    opacity:0;
+    transition:opacity .3s;
+  }
+  .m-card:hover .m-card-label{ opacity:1; }
+  .m-card-label span{
+    color:#fff; font-size:.72rem; letter-spacing:.04em;
+    font-family:'Almoni', sans-serif; line-height:1.3;
     text-align:right;
   }
+  .m-card-label strong{ display:block; font-size:.85rem; }
 
   .hero-overlay{
     position:relative; z-index:2;
@@ -511,11 +523,10 @@
 </nav>
 
 <header class="hero">
-  <div class="marquee-wrap" id="marqueeWrap"></div>
+  <div class="hero-mosaic" id="heroMosaic"></div>
   <div class="hero-overlay">
     <div class="eyebrow">המחלקה לעיצוב טקסטיל — שנקר</div>
     <h1 class="hero-title">בוגרות ובוגרי <em>2026</em></h1>
-    <p class="hero-sub">שש עשרה קולקציות גמר. חוט אחד מחבר ביניהן — יצירה שממשיכה, גם כשהמציאות מפריעה.</p>
   </div>
   <div class="scroll-cue"><span>גלו את התצוגה</span><span class="needle"></span></div>
 </header>
@@ -600,24 +611,55 @@ function initials(name){
 }
 
 // ---- Marquee ----
-const marqueeWrap = document.getElementById('marqueeWrap');
-function buildRow(items, reverse){
-  const row = document.createElement('div');
-  row.className = 'marquee-row' + (reverse ? ' reverse' : '');
-  const doubled = items.concat(items);
-  doubled.forEach(s=>{
-    const card = document.createElement('div');
-    card.className = 'm-card' + (s.hasPhoto ? '' : ' no-photo');
-    card.innerHTML = s.hasPhoto
-      ? `<img src="${s.heroLocal}" alt=""><span>${s.name}</span>`
-      : `<div class="np-mark">${initials(s.name)}</div><span>${s.name}</span>`;
-    row.appendChild(card);
+// ---- Hero Mosaic ----
+const heroMosaic = document.getElementById('heroMosaic');
+const heroEl = document.querySelector('.hero');
+
+STUDENTS.forEach((s, i) => {
+  const card = document.createElement('div');
+  card.className = 'm-card' + (s.hasPhoto ? '' : ' no-photo');
+  card.dataset.depth = (0.4 + Math.random() * 0.5).toFixed(2);
+  card.innerHTML = s.hasPhoto
+    ? `<img src="${s.heroLocal}" alt="">
+       <div class="m-card-label"><span><strong>${s.name}</strong>${s.project}</span></div>`
+    : `<div class="np-mark">${initials(s.name)}</div>
+       <div class="m-card-label"><span><strong>${s.name}</strong>${s.project}</span></div>`;
+  card.addEventListener('click', () => openModal(i));
+  heroMosaic.appendChild(card);
+});
+
+// Cursor interaction — scale nearest cards
+let mouseX = 0, mouseY = 0;
+heroEl.addEventListener('mousemove', e => {
+  const rect = heroEl.getBoundingClientRect();
+  mouseX = e.clientX - rect.left;
+  mouseY = e.clientY - rect.top;
+  const cards = heroMosaic.querySelectorAll('.m-card');
+  cards.forEach(card => {
+    const cr = card.getBoundingClientRect();
+    const cx = cr.left - rect.left + cr.width / 2;
+    const cy = cr.top - rect.top + cr.height / 2;
+    const dist = Math.sqrt((mouseX - cx) ** 2 + (mouseY - cy) ** 2);
+    const maxDist = 320;
+    const t = Math.max(0, 1 - dist / maxDist);
+    const scale = 1 + t * 0.18;
+    const bright = 0.55 + t * 0.45;
+    card.style.transform = `scale(${scale.toFixed(3)})`;
+    card.style.filter = `brightness(${bright.toFixed(2)}) saturate(${(0.8 + t * 0.2).toFixed(2)})`;
+    card.style.zIndex = Math.round(t * 5);
+    card.style.transition = dist < 60
+      ? 'transform .15s ease, filter .15s ease'
+      : 'transform .4s cubic-bezier(.2,.8,.2,1), filter .4s ease';
   });
-  return row;
-}
-const half = Math.ceil(STUDENTS.length/2);
-marqueeWrap.appendChild(buildRow(STUDENTS.slice(0,half), false));
-marqueeWrap.appendChild(buildRow(STUDENTS.slice(half), true));
+});
+
+heroEl.addEventListener('mouseleave', () => {
+  heroMosaic.querySelectorAll('.m-card').forEach(card => {
+    card.style.transform = '';
+    card.style.filter = '';
+    card.style.zIndex = '';
+  });
+});
 
 // ---- Gallery grid ----
 const grid = document.getElementById('grid');
@@ -674,7 +716,7 @@ function openModal(i){
     <button class="mtn-btn" onclick="openModal(_curStudent - 1)">→ קודם</button>
     <button class="mtn-btn" onclick="openModal(_curStudent + 1)">← הבא</button>
     <span class="mtn-spacer"></span>
-    <a class="mtn-btn accent" href="https://www.shenkar.ac.il/he/pages/admission-online-registration/" target="_blank" rel="noopener">הרשמה ליום פתוח</a>
+    <a class="mtn-btn accent" href="https://camp.shenkar.ac.il/opendayexh" target="_blank" rel="noopener">הרשמה ליום פתוח</a>
   `;
 
   // GALLERY
