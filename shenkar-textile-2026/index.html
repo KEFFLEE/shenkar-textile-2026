@@ -151,16 +151,6 @@
     color:var(--gold);
     margin-bottom:18px;
   }
-  .hero-title{
-    font-family:'Almoni', sans-serif;
-    font-weight:400;
-    font-size:clamp(3.2rem, 10vw, 7.8rem);
-    line-height:1.05;
-    letter-spacing:.01em;
-    filter: url(#cloudText);
-    color:#D4AECC;
-  }
-  .hero-title em{ font-style:normal; color:#EE252C; }
   .hero-sub{
     margin-top:22px;
     font-size:clamp(1rem, 2vw, 1.25rem);
@@ -522,9 +512,9 @@
 
 <header class="hero">
   <div class="hero-mosaic" id="heroMosaic"></div>
-  <div class="hero-overlay">
+  <div class="hero-overlay" id="heroOverlay">
     <div class="eyebrow">המחלקה לעיצוב טקסטיל — שנקר</div>
-    <h1 class="hero-title">בוגרות ובוגרי <em>2026</em></h1>
+    <canvas id="heroTitleCanvas" style="display:block;margin:0 auto;max-width:100%;"></canvas>
   </div>
   <div class="scroll-cue"><span>גלו את התצוגה</span><span class="needle"></span></div>
 </header>
@@ -548,7 +538,7 @@
   <div class="intro-sep"></div>
 
   <div class="intro-block">
-    <p style="font-weight:700;font-size:1.13rem;margin-bottom:18px;">הבינה הטקסטילית</p>
+    <p style="font-weight:700;font-size:1.13rem;margin-bottom:18px;">על בינה ועל טקסטיל</p>
     <p>בימים אלה, בהם הבינה המלאכותית מפעימה ומפחידה אותנו בו־זמנית, בוגרי המחלקה לעיצוב טקסטיל מזמינים אותנו לחשוב באמצעות הבינה הטקסטילית.</p>
     <p>בבינה הטקסטילית אין דבר מלאכותי. היא נטוותה לאורך מאות אלפי שנים של תבונת הכפיים, חכמת המנגנונים והמכונות, וממשיותו של החוט. זוהי בינה שנרכשת דרך מגע, חזרתיות, תיקון, הקשבה לחומר ולזמן.</p>
     <p>כשהעולם שמסביבנו רועד ולא יציב, העבודות שבתערוכה מבקשות לבנות מרחבים של משמעות בתוך מציאות מתערערת. הן חוקרות את המתח שבין גוף למעטפת, בין שבר לאיחוי, בין סדר להפרעה, בין זיכרון לאפשרות של התחלה חדשה. אריגה, סריגה, ליבוד, קשירה והדפס אינם רק טכניקות; הם דרכי חשיבה. הן מזכירות שידע אינו מתקיים רק במידע, אלא גם במבנים, במחוות ובפעולות החוזרות שמעצבות את העולם.</p>
@@ -609,6 +599,68 @@ function initials(name){
 }
 
 // ---- Marquee ----
+
+// ---- Dot Title ----
+function drawDotTitle() {
+  const canvas = document.getElementById('heroTitleCanvas');
+  if (!canvas) return;
+
+  const vw = Math.min(window.innerWidth, 1440);
+  const fs  = Math.round(vw * 0.095); // ~9.5vw font size
+  const r   = Math.max(7, Math.round(fs * 0.082));  // dot radius — גדול מספיק לשורה יחידה
+  const step = Math.round(r * 1.48);                // dot spacing
+
+  const W = vw, H = Math.round(fs * 1.6);
+  canvas.width = W; canvas.height = H;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  // offscreen: "בוגרות ובוגרי" in lavender
+  const make = (text) => {
+    const o = document.createElement('canvas');
+    o.width = W; o.height = H;
+    const oc = o.getContext('2d');
+    oc.font = '700 ' + fs + 'px Almoni, sans-serif';
+    oc.textBaseline = 'middle';
+    oc.textAlign = 'center';
+    oc.fillStyle = '#fff';
+    oc.fillText(text, W/2, H/2);
+    return oc.getImageData(0, 0, W, H).data;
+  };
+
+  // offscreen: כל הטקסט יחד, ממורכז
+  const off = document.createElement('canvas');
+  off.width = W; off.height = H;
+  const oc = off.getContext('2d');
+  oc.font = '700 ' + fs + 'px Almoni, sans-serif';
+  oc.textBaseline = 'middle';
+  oc.textAlign = 'center';
+  oc.fillStyle = '#fff';
+  oc.fillText('בוגרות ובוגרי 2026', W / 2, H / 2);
+  const pixels = oc.getImageData(0, 0, W, H).data;
+
+  // Draw dots — צבע אחד
+  ctx.fillStyle = '#D4AECC';
+  for (let y = r; y < H; y += step) {
+    for (let x = r; x < W; x += step) {
+      const i = (y * W + x) * 4;
+      if (pixels[i + 3] > 90) {
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+}
+
+document.fonts.ready.then(() => {
+  drawDotTitle();
+  window.addEventListener('resize', drawDotTitle);
+});
+
 // ---- Hero Mosaic ----
 const heroMosaic = document.getElementById('heroMosaic');
 const heroEl = document.querySelector('.hero');
