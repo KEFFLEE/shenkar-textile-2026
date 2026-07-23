@@ -317,6 +317,8 @@
     display:none; flex-direction:column;
     background:var(--canvas);
     overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
     animation: modalIn .3s cubic-bezier(.2,.7,.2,1);
   }
   .modal-page.open{ display:flex; }
@@ -424,8 +426,28 @@
   }
   .contact-pill:hover{ background:var(--ink); color:var(--canvas); }
   @media(max-width:760px){
-    .modal-split{ grid-template-columns:1fr; grid-template-rows:50vh auto; }
-    .modal-gallery-col{ height:50vh; }
+    .modal-split{
+      display:block;
+    }
+    .modal-gallery-col{
+      position:static;
+      height:auto;
+      overflow-y:visible;
+      max-height:none;
+    }
+    .modal-gallery-col .gimg,
+    .modal-gallery-col .gimg.hero,
+    .modal-gallery-col .gimg.only{
+      aspect-ratio:unset;
+    }
+    .modal-text-col{
+      padding:24px 18px 40px;
+    }
+    .modal-top-bar{
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
   }
 
   /* ============ FOOTER ============ */
