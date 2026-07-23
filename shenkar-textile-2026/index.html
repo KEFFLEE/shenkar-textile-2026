@@ -48,7 +48,71 @@
       repeating-linear-gradient(90deg, rgba(28,23,18,0.025) 0px, rgba(28,23,18,0.025) 1px, transparent 1px, transparent 3px);
   }
 
-  /* ============ NAV ============ */
+  /* ===== OPEN DAY BANNER ===== */
+  .open-day-banner{
+    background:var(--rust);
+    text-align:center;
+    padding:9px 16px;
+  }
+  .open-day-banner a{
+    color:#fff;
+    font-family:'Almoni', sans-serif;
+    font-size:.88rem;
+    font-weight:600;
+    text-decoration:none;
+    letter-spacing:.04em;
+    transition:opacity .2s;
+  }
+  .open-day-banner a:hover{ opacity:.85; }
+
+  /* ===== OPEN DAY HERO BANNER ===== */
+  .openday-hero-banner{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:clamp(16px,3vw,48px);
+    background:var(--rust);
+    color:#fff;
+    text-decoration:none;
+    padding:16px 32px;
+    transition:background .2s;
+    flex-wrap:wrap;
+  }
+  .openday-hero-banner:hover{ background:#c4221b; }
+  .ob-label{
+    font-family:'BabaDots', 'Almoni', sans-serif;
+    font-size:clamp(1.6rem, 4vw, 2.8rem);
+    font-weight:800;
+    letter-spacing:.02em;
+    line-height:1.1;
+  }
+  .ob-cta{
+    font-family:'Montserrat', sans-serif;
+    font-size:clamp(.85rem, 1.5vw, 1rem);
+    font-weight:700;
+    background:rgba(255,255,255,.2);
+    border:1.5px solid rgba(255,255,255,.6);
+    border-radius:100px;
+    padding:8px 20px;
+    letter-spacing:.06em;
+    white-space:nowrap;
+  }
+  .openday-hero-banner:hover .ob-cta{ background:rgba(255,255,255,.35); }
+
+  /* ============ STITCH ============ */
+  .open-day-banner{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    background:var(--rust); color:#fff;
+    padding:9px 20px;
+    font-family:'Almoni', sans-serif; font-size:.88rem; font-weight:700;
+    letter-spacing:.06em; text-decoration:none;
+    direction:rtl;
+    transition:background .2s;
+    position:relative; z-index:101;
+  }
+  .open-day-banner:hover{ background:#c4221b; }
+  .odb-arrow{ font-size:1rem; transition:transform .2s; }
+  .open-day-banner:hover .odb-arrow{ transform:translateX(-4px); }
   nav{
     position:fixed; inset-inline:0; top:0; z-index:100;
     display:flex; align-items:center; justify-content:space-between;
@@ -534,8 +598,9 @@
     display:flex; flex-direction:column; gap:8px;
   }
   .credits-list div{
-    display:flex; justify-content:center; gap:12px;
+    display:flex; justify-content:flex-start; gap:12px;
     font-size:.88rem;
+    text-align:right;
   }
   .credits-list dt{
     color:#7a6e63; font-weight:400; white-space:nowrap;
@@ -575,6 +640,11 @@
 
 <svg class="stitch" viewBox="0 0 1000 26" preserveAspectRatio="none"><path d="M0,13 H1000"/></svg>
 
+<a href="https://camp.shenkar.ac.il/opendayexh" target="_blank" rel="noopener" class="openday-hero-banner">
+  <span class="ob-label">יום פתוח בשנקר</span>
+  <span class="ob-cta">להרשמה ←</span>
+</a>
+
 <section class="intro weave-bg" id="about">
   <h2 class="bubble">יצירה בהפרעה</h2>
 
@@ -604,8 +674,9 @@
     <h3 class="credits-title">צוות התערוכה</h3>
     <dl class="credits-list">
       <div><dt>ריכוז פרויקט גמר</dt><dd>דנה בן שלום</dd></div>
-      <div><dt>אוצרות התערוכה</dt><dd>גלי כנעני-שרמן</dd></div>
-      <div><dt>עיצוב והפקה</dt><dd>רועי שכנאי, הדס הימלשיין</dd></div>
+      <div><dt>אוצרות התערוכה</dt><dd>גלי כנעני</dd></div>
+      <div><dt>עיצוב והפקת התערוכה, בניית אתרים ועיצוב גראפי</dt><dd>רועי שכנאי</dd></div>
+      <div><dt>הפקת התערוכה</dt><dd>הדס הימלשיין</dd></div>
       <div><dt>מתאמת המחלקה</dt><dd>תהילה סחאי</dd></div>
       <div><dt>מזכירת המחלקה</dt><dd>אלן רודניקי</dd></div>
     </dl>
