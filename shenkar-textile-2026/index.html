@@ -597,7 +597,14 @@
   .credits-list{
     display:flex; flex-direction:column; gap:8px;
   }
-  .credits-list div{
+  .credits-team-grid{
+    display:flex; flex-wrap:wrap; justify-content:flex-start;
+    gap:6px 20px; max-width:600px;
+    font-size:.88rem; color:var(--ink);
+    font-weight:400;
+  }
+  .credits-team-grid span::after{ content:'·'; margin-right:4px; color:var(--rust); }
+  .credits-team-grid span:last-child::after{ content:''; }
     display:flex; justify-content:flex-start; gap:12px;
     font-size:.88rem;
     text-align:right;
@@ -667,6 +674,30 @@
     <p>בבינה הטקסטילית אין דבר מלאכותי. היא נטוותה לאורך מאות אלפי שנים של תבונת הכפיים, חכמת המנגנונים והמכונות, וממשיותו של החוט. זוהי בינה שנרכשת דרך מגע, חזרתיות, תיקון, הקשבה לחומר ולזמן.</p>
     <p>כשהעולם שמסביבנו רועד ולא יציב, העבודות שבתערוכה מבקשות לבנות מרחבים של משמעות בתוך מציאות מתערערת. הן חוקרות את המתח שבין גוף למעטפת, בין שבר לאיחוי, בין סדר להפרעה, בין זיכרון לאפשרות של התחלה חדשה. אריגה, סריגה, ליבוד, קשירה והדפס אינם רק טכניקות; הם דרכי חשיבה. הן מזכירות שידע אינו מתקיים רק במידע, אלא גם במבנים, במחוות ובפעולות החוזרות שמעצבות את העולם.</p>
     <div class="intro-attribution"><a href="https://www.shenkar.ac.il/he/%D7%A1%D7%92%D7%9C-%D7%90%D7%A7%D7%93%D7%9E%D7%99/%D7%92%D7%9C%D7%99-%D7%9B%D7%A0%D7%A2%D7%A0%D7%99/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">גלי כנעני</a><br><span style="font-weight:400;color:#7a6e63">חברת סגל ואוצרת התערוכה</span></div>
+  </div>
+
+  <div class="intro-sep"></div>
+  <div class="intro-credits">
+    <h3 class="credits-title">צוות המחלקה</h3>
+    <div class="credits-team-grid">
+      <span>דן אלון</span><span>ירון אליאסי</span><span>יניב אלמליח</span>
+      <span>עמית אל עד</span><span>אלה אמיתי סדובסקי</span><span>אירית בדוסה</span>
+      <span>אושרת בן יצחק שילון</span><span>איתן בן-משה</span><span>דנה בן שלום</span>
+      <span>לינור ברנר</span><span>אדנראה דורזילבה</span><span>הדס הימלשיין</span>
+      <span>מתי הראל</span><span>יעל הרניק</span><span>מריה זברין</span>
+      <span>שושנה טפילין</span><span>יעל טרגן</span><span>יעלה ידלין</span>
+      <span>רוני יחזקאל</span><span>גלי כנעני-שרמן</span><span>אלכסנדר לבנץ</span>
+      <span>אורית לוי</span><span>מיכל לוריא</span><span>דניאל ליבוביץ'</span>
+      <span>פיני ליבוביץ'</span><span>תמר ליפשיץ</span><span>ארנון מדמוני</span>
+      <span>ראומה מוזס</span><span>שיר מלך</span><span>טל מרקוביץ'</span>
+      <span>מלי נווה</span><span>מזלית נוריאל</span><span>תהילה סחאי</span>
+      <span>יעל סקידלסקי</span><span>עמית עדיני סטטמן</span><span>יובל עציוני</span>
+      <span>מירי פרנקל-עשת</span><span>רון צימליך</span><span>טל קובליו</span>
+      <span>מיקי קידר</span><span>אלכסנדרה קנין</span><span>גבי קרטיס</span>
+      <span>מיתר קרני צביק</span><span>אלן רודניקי</span><span>שירה שובל</span>
+      <span>מור שוקרון</span><span>אן שטרית אשור</span><span>רועי שכנאי</span>
+      <span>אייל שפר</span><span>אליה שרביט</span><span>נופר תורן</span>
+    </div>
   </div>
 
   <div class="intro-sep"></div>
